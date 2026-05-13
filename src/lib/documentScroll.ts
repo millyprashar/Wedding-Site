@@ -24,32 +24,20 @@ export function resetScrollAfterRouteChange() {
 }
 
 /**
- * WebKit mobile often keeps a stale offset after the keyboard: nudge then zero.
- */
-function resetDocumentScrollWebKitNudge() {
-  resetDocumentScroll()
-  window.scrollTo(0, 1)
-  resetDocumentScroll()
-}
-
-/**
- * iOS / mobile soft keyboard: aggressive retries + WebKit nudge. Only for login / field blur —
- * not for route changes (conflicts with normal scrolling on event pages).
+ * After the soft keyboard closes — light retries only (no scrollTo 0,1 loop).
+ * Avoid firing while focus moves between controls in the same form (see LoginPage blur guard).
  */
 export function resetDocumentScrollForMobileKeyboard() {
-  resetDocumentScrollWebKitNudge()
+  resetDocumentScroll()
   requestAnimationFrame(() => {
-    resetDocumentScrollWebKitNudge()
-    requestAnimationFrame(() => {
-      resetDocumentScrollWebKitNudge()
-      syncVisualViewportScrollIfNeeded()
-    })
+    resetDocumentScroll()
+    syncVisualViewportScrollIfNeeded()
   })
-  window.setTimeout(() => resetDocumentScrollWebKitNudge(), 0)
-  window.setTimeout(() => resetDocumentScrollWebKitNudge(), 100)
-  window.setTimeout(() => resetDocumentScrollWebKitNudge(), 280)
-  window.setTimeout(() => resetDocumentScrollWebKitNudge(), 450)
-  window.setTimeout(() => resetDocumentScrollWebKitNudge(), 600)
+  window.setTimeout(resetDocumentScroll, 90)
+  window.setTimeout(() => {
+    resetDocumentScroll()
+    syncVisualViewportScrollIfNeeded()
+  }, 280)
 }
 
 /** When the visual viewport moves (e.g. keyboard closes), scroll the layout viewport back to origin. */
@@ -91,12 +79,8 @@ export function onVisualViewportChangeForScroll(
     }
   }
 
-  const onVVScroll = () => syncVisualViewportScrollIfNeeded()
-
   vv.addEventListener('resize', onResize, { passive: true })
-  vv.addEventListener('scroll', onVVScroll, { passive: true })
   return () => {
     vv.removeEventListener('resize', onResize)
-    vv.removeEventListener('scroll', onVVScroll)
   }
 }

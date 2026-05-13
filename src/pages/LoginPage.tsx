@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type FormEvent } from 'react'
+import { useRef, useState, useEffect, type FocusEvent, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -49,6 +49,19 @@ export function LoginPage() {
 
   function scrollTopAfterFieldDismissal() {
     resetDocumentScrollForMobileKeyboard()
+  }
+
+  /** Don’t reset scroll when focus moves between country + phone (blur would fight iOS scroll-into-view). */
+  function handleLoginControlBlur(e: FocusEvent<HTMLElement>) {
+    const form = e.currentTarget.closest('form')
+    const next = e.relatedTarget
+    if (next instanceof Node && form?.contains(next)) return
+
+    requestAnimationFrame(() => {
+      const active = document.activeElement
+      if (active instanceof Node && form?.contains(active)) return
+      scrollTopAfterFieldDismissal()
+    })
   }
 
   async function onSubmit(e: FormEvent) {
@@ -107,7 +120,7 @@ export function LoginPage() {
                     className="login-editorial__underline-select"
                     value={countryDial}
                     onChange={(e) => setCountryDial(e.target.value)}
-                    onBlur={() => scrollTopAfterFieldDismissal()}
+                    onBlur={handleLoginControlBlur}
                   >
                     {LOGIN_COUNTRY_DIAL_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -139,7 +152,7 @@ export function LoginPage() {
                     inputMode="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    onBlur={() => scrollTopAfterFieldDismissal()}
+                    onBlur={handleLoginControlBlur}
                     placeholder={
                       countryDial === DEFAULT_LOGIN_COUNTRY_DIAL
                         ? 'Phone'

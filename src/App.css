@@ -1159,6 +1159,9 @@ h3 {
   gap: clamp(0.75rem, 3vw, 1.35rem);
   width: 100%;
   align-items: start;
+  /* Helps native scroll-into-view when the keyboard opens (less over-scroll vs field). */
+  scroll-margin-top: 5.5rem;
+  scroll-margin-bottom: 1rem;
 }
 
 .login-editorial__underline-field {
@@ -2816,10 +2819,11 @@ h3 {
     text-align: center;
   }
 
-  /* Landing only: tighter bar when brand + RSVP stack so hero copy sits higher */
+  /* Public landing: same vertical padding + gap as signed-in stack (see .site-nav-bar--signed-in @700px) */
   .page.home-landing .site-nav-bar--anonymous {
-    padding-block: clamp(0.55rem, 3vw, 0.85rem);
-    gap: 0.4rem;
+    padding-block: 1.1rem;
+    padding-inline: 1.5rem;
+    gap: 0.65rem clamp(0.75rem, 4vw, 1.35rem);
   }
 
   .site-nav-bar__public {
