@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import { useAuth } from '../contexts/AuthContext'
+import { useLoginDocumentOverscroll } from '../hooks/useDocumentOverscrollShell'
 import { DEFAULT_LOGIN_COUNTRY_DIAL, LOGIN_COUNTRY_DIAL_OPTIONS } from '../lib/loginDialCodes'
 import { buildPhoneDigitsForLogin } from '../lib/phone'
 
@@ -12,6 +13,8 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const countrySelectRef = useRef<HTMLSelectElement>(null)
+
+  useLoginDocumentOverscroll(auth.status !== 'authenticated')
 
   if (auth.status === 'authenticated') {
     return <Navigate to="/" replace />
@@ -35,6 +38,8 @@ export function LoginPage() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
+    const active = document.activeElement
+    if (active instanceof HTMLElement) active.blur()
     setError(null)
     setSubmitting(true)
     try {

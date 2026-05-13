@@ -23,18 +23,37 @@ const SIGNED_OUT_HERO_SCROLL_SEQUENCE = [
 
 const SIGNED_IN_COLLAGE_TILES = [
   {src: '/images/dupattaOverOurHead.jpg', alt: '', className: 'tile-a',},
-  { src: '/images/sunglasses.jpg', alt: '', className: 'tile-b' },
-  { src: '/images/bench.jpg', alt: '', className: 'tile-c' },
-  { src: '/images/oakland3.JPG', alt: '', className: 'tile-d' },
+  { src: '/images/oakland3.JPG', alt: '', className: 'tile-b' },
+  { src: '/images/oakland1.JPG', alt: '', className: 'tile-c' },
+  { src: '/images/sunglasses.jpg', alt: '', className: 'tile-d' },
   { src: '/images/headOnShoulderAlamoSquare.JPG', alt: '', className: 'tile-e' },
   { src: '/images/palace.JPG', alt: '', className: 'tile-f' },
 ] as const
 
 const SIGNED_IN_HOME_PRELOAD_SRCS: readonly string[] = [
   IMG.names,
-  '/images/oakland1.JPG',
+  '/images/headOnShoulderAlamoSquare.JPG',
   ...SIGNED_IN_COLLAGE_TILES.map((t) => t.src),
 ]
+
+const HERO_PHOTO_STRIP_FALLBACK = '/images/photo-booth-2.png'
+
+const HERO_STRIP_LOAD_TIMEOUT_MS = 12_000
+
+async function heroStripsBothLoadOk(): Promise<boolean> {
+  const results = await Promise.all(
+    SIGNED_OUT_HERO_PHOTO_STRIPS.map(
+      (src) =>
+        new Promise<boolean>((resolve) => {
+          const img = new Image()
+          img.onload = () => resolve(true)
+          img.onerror = () => resolve(false)
+          img.src = src
+        }),
+    ),
+  )
+  return results.every(Boolean)
+}
 
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
@@ -61,17 +80,7 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
   }, [])
 
   if (!visualReady) {
-    return (
-      <div className="page home-public home-member">
-        <SiteNavigationBar variant="solid" />
-        <main
-          className="home-member-main home-member-main--preload"
-          aria-busy="true"
-        >
-          <p className="muted home-loading">Loading…</p>
-        </main>
-      </div>
-    )
+    return <div className="page app-blank-state" aria-busy="true" />
   }
 
   return (
@@ -96,7 +105,7 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
           </h1>
           <div className="home-member-collage-stage">
             <figure className="home-member-collage-main">
-              <img src="/images/oakland1.JPG" alt="Milly and Tariq" />
+              <img src="/images/bench.jpg" alt="Milly and Tariq" />
             </figure>
             {SIGNED_IN_COLLAGE_TILES.map((tile) => (
               <figure
@@ -144,19 +153,37 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
 export function HomePage() {
   const auth = useAuth()
   const [namesMarkBroken, setNamesMarkBroken] = useState(false)
+  const [heroLandingPhoto, setHeroLandingPhoto] = useState<
+    'loading' | 'strip' | 'static'
+  >('loading')
 
   useEffect(() => {
     if (auth.status !== 'anonymous') return
 
-    void Promise.all(SIGNED_OUT_HERO_PHOTO_STRIPS.map(preloadImage))
+    let cancelled = false
+    let settled = false
+
+    const timeoutId = window.setTimeout(() => {
+      if (cancelled || settled) return
+      settled = true
+      setHeroLandingPhoto('static')
+    }, HERO_STRIP_LOAD_TIMEOUT_MS)
+
+    void heroStripsBothLoadOk().then((ok) => {
+      if (cancelled || settled) return
+      settled = true
+      window.clearTimeout(timeoutId)
+      setHeroLandingPhoto(ok ? 'strip' : 'static')
+    })
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
   }, [auth.status])
 
   if (auth.status === 'loading' || auth.status === 'idle') {
-    return (
-      <div className="page home-public">
-        <p className="muted home-loading">Loading…</p>
-      </div>
-    )
+    return <div className="page app-blank-state" aria-busy="true" />
   }
 
   if (auth.status === 'authenticated') {
@@ -188,18 +215,45 @@ export function HomePage() {
             </div>
             <div className="home-landing-hero-photo-row">
               <span className="home-landing-hero-side-label">August</span>
-              <figure className="home-landing-hero-figure">
-                <div className="home-landing-hero-photo-track" aria-hidden="true">
-                  {SIGNED_OUT_HERO_SCROLL_SEQUENCE.map((src, index) => (
-                    <img
-                      key={`${src}-${index}`}
-                      src={src}
-                      alt=""
-                      className="home-landing-hero-photo"
-                    />
-                  ))}
-                </div>
-                <span className="sr-only">Milly and Tariq photo booth strips</span>
+              <figure
+                className={[
+                  'home-landing-hero-figure',
+                  heroLandingPhoto === 'strip' ? 'home-landing-hero-figure--strip' : '',
+                  heroLandingPhoto === 'static' ? 'home-landing-hero-figure--static' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-busy={heroLandingPhoto === 'loading'}
+              >
+                {heroLandingPhoto === 'strip' ? (
+                  <div className="home-landing-hero-photo-track" aria-hidden="true">
+                    {SIGNED_OUT_HERO_SCROLL_SEQUENCE.map((src, index) => (
+                      <img
+                        key={`${src}-${index}`}
+                        src={src}
+                        alt=""
+                        className="home-landing-hero-photo"
+                        decoding="async"
+                        fetchPriority={index === 0 ? 'high' : 'low'}
+                        loading="eager"
+                      />
+                    ))}
+                  </div>
+                ) : heroLandingPhoto === 'static' ? (
+                  <img
+                    src={HERO_PHOTO_STRIP_FALLBACK}
+                    alt=""
+                    className="home-landing-hero-photo-static"
+                    decoding="async"
+                    fetchPriority="high"
+                    loading="eager"
+                  />
+                ) : null}
+                <span className="sr-only">
+                  {heroLandingPhoto === 'static'
+                    ? 'Photo booth portrait'
+                    : 'Milly and Tariq photo booth strips'}
+                </span>
               </figure>
               <span className="home-landing-hero-side-label">2026</span>
             </div>

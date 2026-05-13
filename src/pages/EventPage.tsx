@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import * as api from '../lib/api'
@@ -7,6 +7,7 @@ import {
   type ReceptionEventDetails,
 } from '../lib/eventMeta'
 import { useAuth } from '../contexts/AuthContext'
+import { useEventDocumentOverscroll } from '../hooks/useDocumentOverscrollShell'
 import type { RsvpRecord } from '../types'
 
 type AttendingChoice = boolean | null
@@ -26,6 +27,8 @@ export function EventPage() {
   const [savedAdditionalGuestCount, setSavedAdditionalGuestCount] = useState(0)
   const [savingAdditionalGuests, setSavingAdditionalGuests] = useState(false)
   const saveMessageTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const eventDetailsShellRef = useRef<HTMLElement | null>(null)
+  const eventRsvpShellRef = useRef<HTMLElement | null>(null)
 
   const allowed =
     auth.status === 'authenticated' &&
@@ -121,11 +124,7 @@ export function EventPage() {
   }, [auth, eventId])
 
   if (auth.status === 'idle' || auth.status === 'loading') {
-    return (
-      <div className="page home-public">
-        <p className="muted">Loading…</p>
-      </div>
-    )
+    return <div className="page app-blank-state" aria-busy="true" />
   }
 
   if (auth.status === 'anonymous') {
@@ -159,14 +158,7 @@ export function EventPage() {
   }
 
   if (loading && rows.length === 0) {
-    return (
-      <div className="page home-public">
-        <SiteNavigationBar variant="solid" />
-        <main className="narrow">
-          <p className="muted">Loading event…</p>
-        </main>
-      </div>
-    )
+    return <div className="page app-blank-state" aria-busy="true" />
   }
 
   if (error || (!loading && rows.length === 0)) {
@@ -285,10 +277,12 @@ export function EventPage() {
           displayTitle={displayTitle}
           eventId={eventId}
           titleMarkBroken={titleMarkBroken}
+          shellRef={eventDetailsShellRef}
           onTitleMarkError={() => setTitleMarkBroken(true)}
         />
 
         <section
+          ref={eventRsvpShellRef}
           className="rsvp-section--editorial"
           aria-labelledby="rsvp-hero-label"
         >
@@ -446,9 +440,27 @@ export function EventPage() {
             </div>
           </div>
         </section>
+        <EventPageOverscrollManager
+          detailsRef={eventDetailsShellRef}
+          rsvpRef={eventRsvpShellRef}
+          isValima={eventId === 'reception-rahman'}
+        />
       </main>
     </div>
   )
+}
+
+function EventPageOverscrollManager({
+  detailsRef,
+  rsvpRef,
+  isValima,
+}: {
+  detailsRef: RefObject<HTMLElement | null>
+  rsvpRef: RefObject<HTMLElement | null>
+  isValima: boolean
+}) {
+  useEventDocumentOverscroll(detailsRef, rsvpRef, isValima)
+  return null
 }
 
 function EventEditorialDetails({
@@ -456,19 +468,25 @@ function EventEditorialDetails({
   displayTitle,
   eventId,
   titleMarkBroken,
+  shellRef,
   onTitleMarkError,
 }: {
   details: ReceptionEventDetails
   displayTitle: string
   eventId: string
   titleMarkBroken: boolean
+  shellRef?: RefObject<HTMLElement | null>
   onTitleMarkError: () => void
 }) {
   const columnImg = details.landingLeftImage
   const eveningCopy = details.eveningDescription
 
   return (
-    <section className="event-details-editorial" aria-labelledby="event-editorial-title">
+    <section
+      ref={shellRef}
+      className="event-details-editorial"
+      aria-labelledby="event-editorial-title"
+    >
       <div className="event-details-editorial__inner">
         <div className="event-details-editorial__grid">
           <header className="event-page-title-wrap">
