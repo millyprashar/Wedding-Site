@@ -139,7 +139,8 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.1rem 1.5rem;
+  /* Less above the bar on every page; keep a bit more below for separation from content */
+  padding: 0.65rem 1.5rem 1.1rem;
   border-bottom: none;
   background: transparent;
   font-family: var(--font-ui);
@@ -176,6 +177,16 @@ a:hover {
   align-items: center;
   justify-content: flex-end;
   gap: 1.5rem 2rem;
+}
+
+/* Match `.header-event-link` padding so RSVP aligns with signed-in event links */
+.site-nav-bar__public .site-nav-ghost-link {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+}
+
+.site-nav-bar__public .site-nav-ghost-link:hover {
+  text-underline-offset: 0.12em;
 }
 
 .site-nav-brand {
@@ -2819,10 +2830,9 @@ h3 {
     text-align: center;
   }
 
-  /* Public landing: same vertical padding + gap as signed-in stack (see .site-nav-bar--signed-in @700px) */
+  /* Public landing: same gap as signed-in stack @700px; padding matches global .site-nav-bar */
   .page.home-landing .site-nav-bar--anonymous {
-    padding-block: 1.1rem;
-    padding-inline: 1.5rem;
+    padding: 0.65rem 1.5rem 1.1rem;
     gap: 0.65rem clamp(0.75rem, 4vw, 1.35rem);
   }
 
