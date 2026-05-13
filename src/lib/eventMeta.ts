@@ -30,7 +30,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     hostedByLine: 'Hosted by The Prashar Family',
     addressLines: ['7901 Cutting Blvd', 'El Cerrito, California 94530'],
     attire:
-      'Desi formal – think vibrant colors and bold patterns. Saris, lehengas, kurtas, sherwanis, indo-western looks, suits, and gowns are all welcome. We’ll be celebrating with plenty of dancing, so choose attire and shoes that let you move comfortably the whole night.',
+      'Festive formal – think vibrant colors and bold patterns. Saris, lehengas, kurtas, sherwanis, indo-western looks, suits, and gowns are all welcome. We’ll be celebrating with plenty of dancing, so choose attire and shoes that let you move comfortably the whole night.',
     eveningDescription:
       'Join us as we begin with a lively baraat promptly at 4:30 PM, followed by the wedding ceremony. The evening will continue with cocktail / mocktail hour and performances. The night will conclude with dinner, speeches, and an open dance floor!',
     landingLeftImage: '/images/coloredPhotoStrip.jpeg',
@@ -43,9 +43,9 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     hostedByLine: 'Hosted by the Rahman Family',
     addressLines: ['680 Bollinger Canyon Way', 'San Ramon, California 94582'],
     attire:
-      'Formal — evening wear, cultural dress encouraged',
+      'Formal – women are encouraged to wear traditional desi attire, though western formal wear is  welcomed. Men may wear suits, or dress shirts with slacks.',
     eveningDescription:
-      'Join us for an evening with family, food, and cherished memories. We’ll share a few words together, followed by dinner and dessert.',
+      'With gratitude and joy, we invite you to celebrate the newly married couple! Please join us for an evening of togetherness, dinner, and celebration with family and friends.',
     landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
   },
 }
