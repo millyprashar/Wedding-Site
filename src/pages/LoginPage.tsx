@@ -1,9 +1,12 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useRef, useState, useEffect, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import { useAuth } from '../contexts/AuthContext'
 import { useLoginDocumentOverscroll } from '../hooks/useDocumentOverscrollShell'
-import { resetDocumentScrollForMobileKeyboard } from '../lib/documentScroll'
+import {
+  onVisualViewportChangeForScroll,
+  resetDocumentScrollForMobileKeyboard,
+} from '../lib/documentScroll'
 import { DEFAULT_LOGIN_COUNTRY_DIAL, LOGIN_COUNTRY_DIAL_OPTIONS } from '../lib/loginDialCodes'
 import { buildPhoneDigitsForLogin } from '../lib/phone'
 
@@ -16,6 +19,13 @@ export function LoginPage() {
   const countrySelectRef = useRef<HTMLSelectElement>(null)
 
   useLoginDocumentOverscroll(auth.status !== 'authenticated')
+
+  useEffect(() => {
+    if (auth.status === 'authenticated') return
+    return onVisualViewportChangeForScroll(() => {
+      resetDocumentScrollForMobileKeyboard()
+    })
+  }, [auth.status])
 
   if (auth.status === 'authenticated') {
     return <Navigate to="/" replace />

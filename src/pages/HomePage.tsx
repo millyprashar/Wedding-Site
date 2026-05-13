@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import { RECEPTION_EVENT_LABELS } from '../lib/eventMeta'
-import { resetDocumentScrollForMobileKeyboard } from '../lib/documentScroll'
 import { useAuth } from '../contexts/AuthContext'
 import type { GuestProfile } from '../types'
 
@@ -133,11 +132,7 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
                 const label = RECEPTION_EVENT_LABELS[id] ?? id
                 return (
                   <li key={id}>
-                    <Link
-                      to={path}
-                      className="home-member-event-link"
-                      onClick={() => resetDocumentScrollForMobileKeyboard()}
-                    >
+                    <Link to={path} className="home-member-event-link">
                       {label}
                     </Link>
                   </li>

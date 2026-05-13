@@ -11,6 +11,9 @@ import * as api from '../lib/api'
 import type { GuestProfile, FamilyMember } from '../types'
 
 const STORAGE_KEY = 'wedding_guest_id'
+/** Wall-clock idle budget; checked on an interval so background throttling doesn’t indefinitely defer logout. */
+const INACTIVITY_LOGOUT_MS = 30 * 60 * 1000
+const INACTIVITY_CHECK_INTERVAL_MS = 15_000
 
 type AuthState =
   | { status: 'idle' }
@@ -73,6 +76,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (state.status !== 'idle') return
     void refresh()
   }, [state.status, refresh])
+
+  useEffect(() => {
+    if (state.status !== 'authenticated') return
+
+    let lastActivity = Date.now()
+
+    const mark = () => {
+      lastActivity = Date.now()
+    }
+
+    const tick = () => {
+      if (Date.now() - lastActivity >= INACTIVITY_LOGOUT_MS) {
+        logout()
+      }
+    }
+
+    const intervalId = window.setInterval(tick, INACTIVITY_CHECK_INTERVAL_MS)
+
+    const events = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'wheel'] as const
+    const opts: AddEventListenerOptions = { passive: true, capture: true }
+    events.forEach((type) => window.addEventListener(type, mark, opts))
+
+    return () => {
+      window.clearInterval(intervalId)
+      events.forEach((type) => window.removeEventListener(type, mark, opts))
+    }
+  }, [state.status, logout])
 
   const value = useMemo<AuthContextValue>(
     () =>
