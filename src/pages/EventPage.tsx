@@ -12,6 +12,12 @@ import type { RsvpRecord } from '../types'
 
 type AttendingChoice = boolean | null
 
+/** Both wordmarks stay mounted so switching events reuses cached images (no `src` swap flicker). */
+const EVENT_PAGE_TITLE_MARKS: readonly { id: string; src: string }[] = [
+  { id: 'reception-prashar', src: '/images/reception.svg' },
+  { id: 'reception-rahman', src: '/images/valima.svg' },
+]
+
 export function EventPage() {
   const { eventId } = useParams<{ eventId: string }>()
   const auth = useAuth()
@@ -497,12 +503,22 @@ function EventEditorialDetails({
                     eventId === 'reception-prashar' ? 'prashar' : 'rahman'
                   }`}
                 >
-                  <img
-                    src={details.titleMarkSrc}
-                    alt={displayTitle}
-                    className="event-page-title__mark"
-                    onError={onTitleMarkError}
-                  />
+                  {EVENT_PAGE_TITLE_MARKS.map(({ id: markEventId, src }) => {
+                    const active = markEventId === eventId
+                    return (
+                      <img
+                        key={markEventId}
+                        src={src}
+                        alt={active ? displayTitle : ''}
+                        className={`event-page-title__mark${
+                          active ? '' : ' event-page-title__mark--stacked-hidden'
+                        }`}
+                        aria-hidden={!active}
+                        draggable={false}
+                        onError={active ? onTitleMarkError : undefined}
+                      />
+                    )
+                  })}
                 </span>
               ) : (
                 <span className="event-page-title__fallback">{displayTitle}</span>

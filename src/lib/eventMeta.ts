@@ -6,8 +6,6 @@ export const RECEPTION_EVENT_LABELS: Record<string, string> = {
 
 export type ReceptionEventDetails = {
   title: string
-  /** SVG wordmark for the page heading (path under `public/`). */
-  titleMarkSrc: string
   /** ISO string for sorting / formatting (local wall time assumed). */
   dateIso: string
   startTimeLabel: string
@@ -26,7 +24,6 @@ export type ReceptionEventDetails = {
 export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   'reception-prashar': {
     title: 'Reception',
-    titleMarkSrc: '/images/reception.svg',
     dateIso: '2026-08-08T16:30:00',
     startTimeLabel: '4:30 PM',
     venueName: 'Berkeley Country Club',
@@ -40,7 +37,6 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   },
   'reception-rahman': {
     title: 'Valima',
-    titleMarkSrc: '/images/valima.svg',
     dateIso: '2026-08-09T13:00:00',
     startTimeLabel: '5:00 PM',
     venueName: 'Canyon View Event Center',
