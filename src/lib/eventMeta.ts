@@ -1,0 +1,55 @@
+/** Labels for reception routes shown in navigation after sign-in. */
+export const RECEPTION_EVENT_LABELS: Record<string, string> = {
+  'reception-prashar': 'Reception',
+  'reception-rahman': 'Valima',
+}
+
+export type ReceptionEventDetails = {
+  title: string
+  /** SVG wordmark for the page heading (path under `public/`). */
+  titleMarkSrc: string
+  /** ISO string for sorting / formatting (local wall time assumed). */
+  dateIso: string
+  startTimeLabel: string
+  venueName: string
+  /** Shown under the details column photo (e.g. “Hosted by …”). */
+  hostedByLine: string
+  addressLines: string[]
+  attire: string
+  /** “The evening” body copy. */
+  eveningDescription: string
+  /** Photo in the event details column (path under `public/`). */
+  landingLeftImage: string
+}
+
+/** Edit copy here — single source for event pages and `fetchEvent` metadata. */
+export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
+  'reception-prashar': {
+    title: 'Reception',
+    titleMarkSrc: '/images/reception.svg',
+    dateIso: '2026-08-08T16:30:00',
+    startTimeLabel: '4:30 PM',
+    venueName: 'Berkeley Country Club',
+    hostedByLine: 'Hosted by The Prashar Family',
+    addressLines: ['7901 Cutting Blvd', 'El Cerrito, California 94530'],
+    attire:
+      'Desi formal – think vibrant colors and bold patterns. Saris, lehengas, kurtas, sherwanis, indo-western looks, suits, and gowns are all welcome. We’ll be celebrating with plenty of dancing, so choose attire and shoes that let you move comfortably the whole night.',
+    eveningDescription:
+      'Join us as we begin with a lively baraat promptly at 4:30 PM, followed by the wedding ceremony. The evening will continue with cocktail / mocktail hour and performances. The night will conclude with dinner, speeches, and an open dance floor!',
+    landingLeftImage: '/images/coloredPhotoStrip.jpeg',
+  },
+  'reception-rahman': {
+    title: 'Valima',
+    titleMarkSrc: '/images/valima.svg',
+    dateIso: '2026-08-09T13:00:00',
+    startTimeLabel: '5:00 PM',
+    venueName: 'Canyon View Event Center',
+    hostedByLine: 'Hosted by the Rahman Family',
+    addressLines: ['680 Bollinger Canyon Way', 'San Ramon, California 94582'],
+    attire:
+      'Formal — evening wear, cultural dress encouraged',
+    eveningDescription:
+      'Join us for an evening with family, food, and cherished memories. We’ll share a few words together, followed by dinner and dessert.',
+    landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
+  },
+}
