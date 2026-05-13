@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import { useAuth } from '../contexts/AuthContext'
 import { useLoginDocumentOverscroll } from '../hooks/useDocumentOverscrollShell'
+import { resetDocumentScrollForMobileKeyboard } from '../lib/documentScroll'
 import { DEFAULT_LOGIN_COUNTRY_DIAL, LOGIN_COUNTRY_DIAL_OPTIONS } from '../lib/loginDialCodes'
 import { buildPhoneDigitsForLogin } from '../lib/phone'
 
@@ -36,10 +37,15 @@ export function LoginPage() {
     }
   }
 
+  function scrollTopAfterFieldDismissal() {
+    resetDocumentScrollForMobileKeyboard()
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     const active = document.activeElement
     if (active instanceof HTMLElement) active.blur()
+    scrollTopAfterFieldDismissal()
     setError(null)
     setSubmitting(true)
     try {
@@ -91,6 +97,7 @@ export function LoginPage() {
                     className="login-editorial__underline-select"
                     value={countryDial}
                     onChange={(e) => setCountryDial(e.target.value)}
+                    onBlur={() => scrollTopAfterFieldDismissal()}
                   >
                     {LOGIN_COUNTRY_DIAL_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -122,6 +129,7 @@ export function LoginPage() {
                     inputMode="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    onBlur={() => scrollTopAfterFieldDismissal()}
                     placeholder={
                       countryDial === DEFAULT_LOGIN_COUNTRY_DIAL
                         ? 'Phone'
