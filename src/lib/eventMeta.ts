@@ -33,7 +33,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     hostedByLine: 'Hosted by The Prashar Family',
     addressLines: ['7901 Cutting Blvd', 'El Cerrito, California 94530'],
     attire:
-      'Festive formal – think vibrant colors and bold patterns. Saris, lehengas, kurtas, sherwanis, indo-western looks, suits, and gowns are all welcome. We’ll be celebrating with plenty of dancing, so choose attire and shoes that let you move comfortably the whole night.',
+      'Festive formal – come dressed in your best with vibrant colors, rich textures, and statement patterns. Saris, lehengas, kurtas, sherwanis, and indo-western ensembles are all encouraged. We’ll be celebrating with plenty of dancing, so choose attire and shoes that let you move comfortably the whole night!',
     eveningDescription:
       'Join us as we begin with a lively baraat promptly at 4:30 PM, followed by the wedding ceremony. The evening will continue with cocktail / mocktail hour and performances. The night will conclude with dinner, speeches, and an open dance floor!',
     landingLeftImage: '/images/coloredPhotoStrip.jpeg',

@@ -91,7 +91,13 @@ export function EventPage() {
           else if (r.status === 'declined') nextChoices[r.guestId] = false
           else nextChoices[r.guestId] = null
         }
-        setRows(list)
+        const actorId = auth.status === 'authenticated' ? auth.guestId : ''
+        const selfRow = actorId ? list.find((row) => row.guestId === actorId) : undefined
+        const rowsOrdered =
+          selfRow && list.length > 0
+            ? [selfRow, ...list.filter((row) => row.guestId !== actorId)]
+            : list
+        setRows(rowsOrdered)
         setChoices(nextChoices)
       })
       .catch((e) => {
@@ -303,7 +309,9 @@ export function EventPage() {
                   Please select a response for each
                 </p>
                 <p className="rsvp-editorial__lede-line">
-                  guest in your group by July 10th 2026.
+                  guest in your group by{' '}
+                  <strong className="rsvp-editorial__lede-strong">July 10th 2026</strong>
+                  .
                 </p>
                 <p className="rsvp-editorial__lede-line">
                 </p>
