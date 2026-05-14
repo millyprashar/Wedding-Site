@@ -21,6 +21,8 @@ const SIGNED_OUT_HERO_SCROLL_SEQUENCE = [
   ...SIGNED_OUT_HERO_PHOTO_STRIPS,
 ]
 
+const SIGNED_IN_MAIN_COLLAGE_PHOTO = '/images/bench.jpg'
+
 const SIGNED_IN_COLLAGE_TILES = [
   {src: '/images/dupattaOverOurHead.jpg', alt: '', className: 'tile-a',},
   { src: '/images/oakland3.JPG', alt: '', className: 'tile-b' },
@@ -30,11 +32,15 @@ const SIGNED_IN_COLLAGE_TILES = [
   { src: '/images/palace.JPG', alt: '', className: 'tile-f' },
 ] as const
 
+/** Main photo first — it was missing from preload and appeared late after the blank state cleared. */
 const SIGNED_IN_HOME_PRELOAD_SRCS: readonly string[] = [
+  SIGNED_IN_MAIN_COLLAGE_PHOTO,
   IMG.names,
-  '/images/headOnShoulderAlamoSquare.JPG',
   ...SIGNED_IN_COLLAGE_TILES.map((t) => t.src),
 ]
+
+const MEMBER_HOME_MIN_SPLASH_MS = 450
+const MEMBER_HOME_READY_TIMEOUT_MS = 25_000
 
 const HERO_PHOTO_STRIP_FALLBACK = '/images/photo-booth-2.png'
 
@@ -58,7 +64,12 @@ async function heroStripsBothLoadOk(): Promise<boolean> {
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
     const img = new Image()
-    img.onload = () => resolve()
+    img.onload = () => {
+      img
+        .decode()
+        .then(() => resolve())
+        .catch(() => resolve())
+    }
     img.onerror = () => resolve()
     img.src = src
   })
@@ -71,9 +82,24 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
 
   useEffect(() => {
     let cancelled = false
-    void Promise.all(SIGNED_IN_HOME_PRELOAD_SRCS.map(preloadImage)).then(() => {
-      if (!cancelled) setVisualReady(true)
+    const t0 = performance.now()
+
+    const ready = Promise.race([
+      Promise.all(SIGNED_IN_HOME_PRELOAD_SRCS.map(preloadImage)),
+      new Promise<void>((r) =>
+        window.setTimeout(r, MEMBER_HOME_READY_TIMEOUT_MS),
+      ),
+    ])
+
+    void ready.then(() => {
+      if (cancelled) return
+      const elapsed = performance.now() - t0
+      const hold = Math.max(0, MEMBER_HOME_MIN_SPLASH_MS - elapsed)
+      window.setTimeout(() => {
+        if (!cancelled) setVisualReady(true)
+      }, hold)
     })
+
     return () => {
       cancelled = true
     }
@@ -105,14 +131,19 @@ function HomeMemberView({ guest }: { guest: GuestProfile }) {
           </h1>
           <div className="home-member-collage-stage">
             <figure className="home-member-collage-main">
-              <img src="/images/bench.jpg" alt="Milly and Tariq" />
+              <img
+                src={SIGNED_IN_MAIN_COLLAGE_PHOTO}
+                alt="Milly and Tariq"
+                fetchPriority="high"
+                decoding="async"
+              />
             </figure>
             {SIGNED_IN_COLLAGE_TILES.map((tile) => (
               <figure
                 key={tile.className}
                 className={`home-member-collage-tile ${tile.className}`}
               >
-                <img src={tile.src} alt={tile.alt} />
+                <img src={tile.src} alt={tile.alt} loading="lazy" decoding="async" />
               </figure>
             ))}
           </div>
@@ -156,6 +187,19 @@ export function HomePage() {
   const [heroLandingPhoto, setHeroLandingPhoto] = useState<
     'loading' | 'strip' | 'static'
   >('loading')
+
+  /** Hint the browser to fetch member collage assets as soon as we’re signed in (parallel to blank splash). */
+  useEffect(() => {
+    if (auth.status !== 'authenticated') return
+    for (const href of SIGNED_IN_HOME_PRELOAD_SRCS) {
+      if (document.querySelector(`link[rel="preload"][as="image"][href="${href}"]`)) continue
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = href
+      document.head.appendChild(link)
+    }
+  }, [auth.status])
 
   useEffect(() => {
     if (auth.status !== 'anonymous') return
