@@ -6,6 +6,7 @@ import {
   RECEPTION_EVENT_DETAILS,
   type ReceptionEventDetails,
 } from '../lib/eventMeta'
+import { downloadEventCalendarIcs } from '../lib/calendarExport'
 import { useAuth } from '../contexts/AuthContext'
 import { useEventDocumentOverscroll } from '../hooks/useDocumentOverscrollShell'
 import type { RsvpRecord } from '../types'
@@ -569,6 +570,18 @@ function EventEditorialDetails({
                     </>
                   ) : null}
                 </p>
+                <button
+                  type="button"
+                  className="event-add-calendar"
+                  onClick={() =>
+                    downloadEventCalendarIcs(details, {
+                      eventId,
+                      summary: `Milly & Tariq — ${displayTitle}`,
+                    })
+                  }
+                >
+                  Add to calendar
+                </button>
               </div>
             </article>
 

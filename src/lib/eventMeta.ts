@@ -8,6 +8,8 @@ export type ReceptionEventDetails = {
   title: string
   /** ISO string for sorting / formatting (local wall time assumed). */
   dateIso: string
+  /** Same clock semantics as `dateIso`; end of event for calendar export. */
+  endDateIso: string
   startTimeLabel: string
   venueName: string
   /** Shown under the details column photo (e.g. “Hosted by …”). */
@@ -25,6 +27,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   'reception-prashar': {
     title: 'Reception',
     dateIso: '2026-08-08T16:30:00',
+    endDateIso: '2026-08-08T23:30:00',
     startTimeLabel: '4:30 PM',
     venueName: 'Berkeley Country Club',
     hostedByLine: 'Hosted by The Prashar Family',
@@ -37,7 +40,8 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   },
   'reception-rahman': {
     title: 'Valima',
-    dateIso: '2026-08-09T13:00:00',
+    dateIso: '2026-08-09T17:00:00',
+    endDateIso: '2026-08-09T22:00:00',
     startTimeLabel: '5:00 PM',
     venueName: 'Canyon View Event Center',
     hostedByLine: 'Hosted by the Rahman Family',
