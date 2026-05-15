@@ -40,9 +40,9 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   },
   'reception-rahman': {
     title: 'Valima',
-    dateIso: '2026-08-09T18:00:00',
+    dateIso: '2026-08-09T18:30:00',
     endDateIso: '2026-08-09T23:00:00',
-    startTimeLabel: '6:00 PM',
+    startTimeLabel: '6:30 PM',
     venueName: 'Canyon View Event Center',
     hostedByLine: 'Hosted by the Rahman Family',
     addressLines: ['680 Bollinger Canyon Way', 'San Ramon, California 94582'],
