@@ -47,9 +47,9 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     hostedByLine: 'Hosted by the Rahman Family',
     addressLines: ['680 Bollinger Canyon Way', 'San Ramon, California 94582'],
     attire:
-      'Formal – women are encouraged to wear traditional desi attire, though western formal wear is  welcomed. Men may wear suits, or dress shirts with slacks.',
+      'Desi formal for ladies and western suits for men.',
     eveningDescription:
-      'With gratitude and joy, we invite you to celebrate the newly married couple! Please join us for an evening of togetherness, dinner, and celebration with family and friends.',
+      'Please join our families in celebrating Tariq and Milly\'s marriage! The evening will begin outside with appetizers and mocktails. We will then move inside for photos, speeches, a slideshow, and dinner. We will end the evening with cake cutting and dessert.',
     landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
   },
 }
