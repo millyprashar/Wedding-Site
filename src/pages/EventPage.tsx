@@ -13,6 +13,8 @@ import type { RsvpRecord } from '../types'
 
 type AttendingChoice = boolean | null
 
+const RSVP_SAVED_MESSAGE_MS = 5_000
+
 /** Both wordmarks stay mounted so switching events reuses cached images (no `src` swap flicker). */
 const EVENT_PAGE_TITLE_MARKS: readonly { id: string; src: string }[] = [
   { id: 'reception-prashar', src: '/images/reception.svg' },
@@ -206,7 +208,7 @@ export function EventPage() {
       saveMessageTimer.current = setTimeout(() => {
         setSavedGuestId(null)
         saveMessageTimer.current = null
-      }, 2200)
+      }, RSVP_SAVED_MESSAGE_MS)
     } catch (err) {
       setChoices((c) => ({ ...c, [guestId]: previous }))
       setError(err instanceof Error ? err.message : 'Could not save')
@@ -622,7 +624,7 @@ function EventEditorialDetails({
                 <p className="event-details-pair__prose">
                   As we begin this new chapter together, your presence at our
                   celebration is truly the greatest gift. For those who wish to
-                  honor us further, we kindly request no boxed gifts – written cards and cash are appriciated!
+                  honor us further, we kindly request no boxed gifts – written cards and cash are appreciated!
                 </p>
               </div>
             </article>
