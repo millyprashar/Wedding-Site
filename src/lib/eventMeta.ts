@@ -52,7 +52,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     attire:
       'Desi formal for ladies and western suits for men.',
     eveningDescription:
-      'Please join our families in celebrating Tariq and Milly\'s marriage! The evening will begin outside with appetizers and mocktails. We will then move inside for photos, speeches, a slideshow, and dinner. We will end the evening with cake cutting and dessert.',
+      'Join our families as we come together to celebrate the marriage of Tariq and Milly. The evening commences outdoors with a selection of appetizers and mocktails, followed by an indoor reception featuring speeches, a commemorative slideshow, and dinner. We will conclude our celebration with the cutting of the cake and dessert.',
     landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
   },
   mehndi: {
@@ -67,7 +67,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     attire:
       'Colorful festive attire — incorporate shades of orange, pink, and yellow. Mehndi stains are inevitable, so wear something you do not mind getting a little messy!',
     eveningDescription:
-      'Join us for an evening of henna, music, and celebration as we kick off the wedding festivities. Food and refreshments will be served throughout the night.',
+      'Join us for an evening of mehndi (duh), music, and celebration as we kick off the wedding festivities. This will be a girls only night, so leave the boys at home! Food and refreshments will be served throughout the night <3',
     landingLeftImage: '/images/mehndi-details.jpg',
   },
 }
