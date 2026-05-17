@@ -102,7 +102,7 @@ html[data-overscroll-shell='event-valima'] body {
 
 html[data-overscroll-shell='event-mehndi'],
 html[data-overscroll-shell='event-mehndi'] body {
-  background-color: #aba575;
+  background-color: #625e05;
 }
 
 html[data-overscroll-shell='event-rsvp'],
@@ -2066,15 +2066,17 @@ h3 {
 
 /* —— Mehndi: olive shell + details (RSVP block unchanged) —— */
 .page.event-page.event-page--mehndi {
-  background: #aba575;
+  --mehndi-shell: #625e05;
+  --mehndi-shell-hover: #524e04;
+  background: var(--mehndi-shell);
 }
 
 .page.event-page.event-page--mehndi .site-nav-bar.site-nav-bar--solid {
-  background: #aba575;
+  background: var(--mehndi-shell);
 }
 
 .page.event-page.event-page--mehndi .event-details-editorial {
-  background: #aba575;
+  background: var(--mehndi-shell);
 }
 
 @media (min-width: 961px) {
@@ -2120,14 +2122,14 @@ h3 {
 }
 
 .page.event-page.event-page--mehndi .rsvp-pill--selected {
-  background: #aba575;
+  background: var(--mehndi-shell);
   color: var(--text-cream-on-dark-hover);
-  border-color: #aba575;
+  border-color: var(--mehndi-shell);
 }
 
 .page.event-page.event-page--mehndi .rsvp-pill--selected:hover:not(:disabled) {
-  background: #9b9669;
-  border-color: #9b9669;
+  background: var(--mehndi-shell-hover);
+  border-color: var(--mehndi-shell-hover);
 }
 
 /* —— Event page split landing —— */
