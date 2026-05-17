@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { SiteNavigationBar } from '../components/SiteNavigationBar'
 import * as api from '../lib/api'
@@ -14,6 +21,21 @@ import type { RsvpRecord } from '../types'
 type AttendingChoice = boolean | null
 
 const RSVP_SAVED_MESSAGE_MS = 5_000
+const MEHNDI_DETAILS_IMAGE = RECEPTION_EVENT_DETAILS.mehndi.landingLeftImage
+
+function preloadImage(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      img
+        .decode()
+        .then(() => resolve())
+        .catch(() => resolve())
+    }
+    img.onerror = () => resolve()
+    img.src = src
+  })
+}
 
 /** Both wordmarks stay mounted so switching events reuses cached images (no `src` swap flicker). */
 const EVENT_PAGE_TITLE_MARKS: readonly { id: string; src: string }[] = [
@@ -56,6 +78,7 @@ export function EventPage() {
   const [additionalGuestCount, setAdditionalGuestCount] = useState(0)
   const [savedAdditionalGuestCount, setSavedAdditionalGuestCount] = useState(0)
   const [savingAdditionalGuests, setSavingAdditionalGuests] = useState(false)
+  const [mehndiVisualReady, setMehndiVisualReady] = useState(false)
   const saveMessageTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const eventDetailsShellRef = useRef<HTMLElement | null>(null)
   const eventRsvpShellRef = useRef<HTMLElement | null>(null)
@@ -145,6 +168,21 @@ export function EventPage() {
     setTitleMarkBroken(false)
   }, [eventId])
 
+  useLayoutEffect(() => {
+    setMehndiVisualReady(eventId !== 'mehndi')
+  }, [eventId])
+
+  useEffect(() => {
+    if (eventId !== 'mehndi') return
+    let cancelled = false
+    void preloadImage(MEHNDI_DETAILS_IMAGE).then(() => {
+      if (!cancelled) setMehndiVisualReady(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [eventId])
+
   useEffect(() => {
     if (auth.status !== 'authenticated') {
       setAdditionalGuestCount(0)
@@ -193,7 +231,7 @@ export function EventPage() {
     )
   }
 
-  if (loading && rows.length === 0) {
+  if ((loading && rows.length === 0) || (eventId === 'mehndi' && !mehndiVisualReady)) {
     return <div className="page app-blank-state" aria-busy="true" />
   }
 
