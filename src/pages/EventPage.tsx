@@ -19,7 +19,28 @@ const RSVP_SAVED_MESSAGE_MS = 5_000
 const EVENT_PAGE_TITLE_MARKS: readonly { id: string; src: string }[] = [
   { id: 'reception-prashar', src: '/images/reception.svg' },
   { id: 'reception-rahman', src: '/images/valima.svg' },
+  { id: 'mehndi', src: '/images/mehndi.svg' },
 ]
+
+function eventPageModifier(eventId: string): string {
+  if (eventId === 'reception-rahman') return ' event-page--valima'
+  if (eventId === 'mehndi') return ' event-page--mehndi'
+  return ''
+}
+
+function eventVisualVariant(eventId: string): 'prashar' | 'rahman' | 'mehndi' {
+  if (eventId === 'reception-rahman') return 'rahman'
+  if (eventId === 'mehndi') return 'mehndi'
+  return 'prashar'
+}
+
+function eventDetailsOverscrollShell(
+  eventId: string,
+): 'prashar' | 'valima' | 'mehndi' {
+  if (eventId === 'reception-rahman') return 'valima'
+  if (eventId === 'mehndi') return 'mehndi'
+  return 'prashar'
+}
 
 export function EventPage() {
   const { eventId } = useParams<{ eventId: string }>()
@@ -280,9 +301,7 @@ export function EventPage() {
 
   return (
     <div
-      className={`page home-public event-page${
-        eventId === 'reception-rahman' ? ' event-page--valima' : ''
-      }`}
+      className={`page home-public event-page${eventPageModifier(eventId)}`}
     >
       <SiteNavigationBar variant="solid" />
 
@@ -460,7 +479,7 @@ export function EventPage() {
         <EventPageOverscrollManager
           detailsRef={eventDetailsShellRef}
           rsvpRef={eventRsvpShellRef}
-          isValima={eventId === 'reception-rahman'}
+          detailsShell={eventDetailsOverscrollShell(eventId)}
         />
       </main>
     </div>
@@ -470,13 +489,13 @@ export function EventPage() {
 function EventPageOverscrollManager({
   detailsRef,
   rsvpRef,
-  isValima,
+  detailsShell,
 }: {
   detailsRef: RefObject<HTMLElement | null>
   rsvpRef: RefObject<HTMLElement | null>
-  isValima: boolean
+  detailsShell: 'prashar' | 'valima' | 'mehndi'
 }) {
-  useEventDocumentOverscroll(detailsRef, rsvpRef, isValima)
+  useEventDocumentOverscroll(detailsRef, rsvpRef, detailsShell)
   return null
 }
 
@@ -497,6 +516,7 @@ function EventEditorialDetails({
 }) {
   const columnImg = details.landingLeftImage
   const eveningCopy = details.eveningDescription
+  const visualVariant = eventVisualVariant(eventId)
 
   return (
     <section
@@ -510,9 +530,7 @@ function EventEditorialDetails({
             <h1 className="event-page-title" id="event-editorial-title">
               {!titleMarkBroken ? (
                 <span
-                  className={`event-page-title__mark-wrap event-page-title__mark-wrap--${
-                    eventId === 'reception-prashar' ? 'prashar' : 'rahman'
-                  }`}
+                  className={`event-page-title__mark-wrap event-page-title__mark-wrap--${visualVariant}`}
                 >
                   {EVENT_PAGE_TITLE_MARKS.map(({ id: markEventId, src }) => {
                     const active = markEventId === eventId
@@ -541,15 +559,26 @@ function EventEditorialDetails({
               Event Details
             </h2> */}
             <figure
-              className={`event-details-editorial__figure event-details-editorial__figure--${
-                eventId === 'reception-prashar' ? 'prashar' : 'rahman'
-              }`}
+              className={`event-details-editorial__figure event-details-editorial__figure--${visualVariant}`}
             >
               <img
                 src={columnImg}
                 alt={displayTitle}
               />
             </figure>
+            {eventId === 'mehndi' ? (
+              <div className="event-details-editorial__mehndi-title">
+                <p className="rsvp-editorial__lede-line">
+                  This{' '}
+                  <span style={{ fontFamily: 'var(--font-burgues-script)', fontSize: '1.5rem' }}>
+                    diva
+                  </span>{' '}
+                  is getting married!
+                </p>
+                <p className="rsvp-editorial__lede-line">
+                </p>
+              </div>
+            ) : null}
             {/* <p className="event-details-editorial__sub">{details.hostedByLine}</p> */}
           </aside>
 
@@ -605,7 +634,11 @@ function EventEditorialDetails({
               </div>
             </article>
 
-            <article className="event-details-pair">
+            <article
+              className={`event-details-pair${
+                eventId === 'mehndi' ? ' event-details-pair--last' : ''
+              }`}
+            >
               <h2 className="event-details-pair__title" id="event-editorial-dress">
                 <span className="event-details-pair__the">The</span>
                 <span className="event-details-pair__label"> dress code</span>
@@ -615,19 +648,21 @@ function EventEditorialDetails({
               </div>
             </article>
 
-            <article className="event-details-pair event-details-pair--last">
-              <h2 className="event-details-pair__title" id="event-editorial-gifting">
-                <span className="event-details-pair__the">The</span>
-                <span className="event-details-pair__label"> gifting policy</span>
-              </h2>
-              <div className="event-details-pair__body">
-                <p className="event-details-pair__prose">
-                  As we begin this new chapter together, your presence at our
-                  celebration is truly the greatest gift. For those who wish to
-                  honor us further, we kindly request no boxed gifts – written cards and cash are appreciated!
-                </p>
-              </div>
-            </article>
+            {eventId !== 'mehndi' ? (
+              <article className="event-details-pair event-details-pair--last">
+                <h2 className="event-details-pair__title" id="event-editorial-gifting">
+                  <span className="event-details-pair__the">The</span>
+                  <span className="event-details-pair__label"> gifting policy</span>
+                </h2>
+                <div className="event-details-pair__body">
+                  <p className="event-details-pair__prose">
+                    As we begin this new chapter together, your presence at our
+                    celebration is truly the greatest gift. For those who wish to
+                    honor us further, we kindly request no boxed gifts – written cards and cash are appreciated!
+                  </p>
+                </div>
+              </article>
+            ) : null}
           </div>
         </div>
       </div>

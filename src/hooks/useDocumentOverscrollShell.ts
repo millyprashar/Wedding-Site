@@ -23,7 +23,7 @@ export function useLoginDocumentOverscroll(active: boolean) {
 export function useEventDocumentOverscroll(
   detailsRef: RefObject<HTMLElement | null>,
   rsvpRef: RefObject<HTMLElement | null>,
-  isValima: boolean,
+  detailsShell: 'prashar' | 'valima' | 'mehndi',
 ) {
   useLayoutEffect(() => {
     const details = detailsRef.current
@@ -46,9 +46,11 @@ export function useEventDocumentOverscroll(
       const shell =
         vr >= vd
           ? 'event-rsvp'
-          : isValima
+          : detailsShell === 'valima'
             ? 'event-valima'
-            : 'event-prashar'
+            : detailsShell === 'mehndi'
+              ? 'event-mehndi'
+              : 'event-prashar'
       document.documentElement.dataset.overscrollShell = shell
     }
 
@@ -75,5 +77,5 @@ export function useEventDocumentOverscroll(
       ro.disconnect()
       clearOverscrollShell()
     }
-  }, [detailsRef, rsvpRef, isValima])
+  }, [detailsRef, rsvpRef, detailsShell])
 }

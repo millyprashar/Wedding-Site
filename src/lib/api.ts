@@ -59,6 +59,12 @@ function getAdditionalGuestsAllowedColumnCandidates(eventId: string): string[] {
       'additional_guests_allowed_rahman',
     ]
   }
+  if (eventId === 'mehndi') {
+    return [
+      'additionalGuestsAllowedMehndi',
+      'additional_guests_allowed_mehndi',
+    ]
+  }
   return []
 }
 
@@ -77,6 +83,12 @@ function getAdditionalGuestsConfirmedColumnCandidates(eventId: string): string[]
       'additionalGuestsConfirmedRahman',
       'additionl_guests_confirmed_rahman',
       'additional_guests_confirmed_rahman',
+    ]
+  }
+  if (eventId === 'mehndi') {
+    return [
+      'additionalGuestsConfirmedMehndi',
+      'additional_guests_confirmed_mehndi',
     ]
   }
   return []
@@ -137,6 +149,8 @@ function getInviteEventIds(row: InviteRow): string[] {
     'receptionRahmanInvited',
     'reception_rahman_invited',
   ])
+  const mehndi = pickBooleanFlag(row, ['mehndiInvited', 'mehndi_invited'])
+  if (mehndi) ids.push('mehndi')
   if (prashar) ids.push('reception-prashar')
   if (rahman) ids.push('reception-rahman')
   return ids
@@ -148,6 +162,9 @@ function getInviteRsvpColumnCandidates(eventId: string): string[] {
   }
   if (eventId === 'reception-rahman') {
     return ['receptionRahmanRSVP', 'reception_rahman_rsvp']
+  }
+  if (eventId === 'mehndi') {
+    return ['mehndiRSVP', 'mehndi_rsvp']
   }
   return []
 }

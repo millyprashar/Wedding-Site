@@ -2,6 +2,7 @@
 export const RECEPTION_EVENT_LABELS: Record<string, string> = {
   'reception-prashar': 'Reception',
   'reception-rahman': 'Valima',
+  mehndi: 'Mehndi',
 }
 
 export type ReceptionEventDetails = {
@@ -51,5 +52,19 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     eveningDescription:
       'Please join our families in celebrating Tariq and Milly\'s marriage! The evening will begin outside with appetizers and mocktails. We will then move inside for photos, speeches, a slideshow, and dinner. We will end the evening with cake cutting and dessert.',
     landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
+  },
+  mehndi: {
+    title: 'Mehndi',
+    dateIso: '2026-08-07T17:00:00',
+    endDateIso: '2026-08-07T22:00:00',
+    startTimeLabel: '7:00 PM',
+    venueName: 'The Prashar Residence',
+    hostedByLine: 'Hosted by The Prashar Family',
+    addressLines: ['560 Elysian Fields Drive', 'Oakland, California 94605'],
+    attire:
+      'Colorful festive attire — incorporate shades of orange, pink, and yellow! Mehndi stains are inevitable, so wear something you do not mind getting a little messy!',
+    eveningDescription:
+      'Join us for an evening of henna, music, and celebration as we kick off the wedding festivities. Food and refreshments will be served throughout the night.',
+    landingLeftImage: '/images/mehndi-details.jpg',
   },
 }
