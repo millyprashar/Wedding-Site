@@ -52,7 +52,7 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
     attire:
       'Desi formal for ladies and western suits for men.',
     eveningDescription:
-      'Please join our families in celebrating Tariq and Milly\'s marriage! The evening will begin outside with appetizers and mocktails. We will then move inside for photos, speeches, a slideshow, and dinner. We will end the evening with cake cutting and dessert.',
+      'Join our families as we come together to celebrate the marriage of Tariq and Milly. The evening commences outdoors with a selection of appetizers and mocktails, followed by an indoor reception featuring speeches, a commemorative slideshow, and dinner. We will conclude our celebration with the cutting of the cake and dessert.',
     landingLeftImage: '/images/blackAndWhitePhotoStrip.jpeg',
   },
   mehndi: {
