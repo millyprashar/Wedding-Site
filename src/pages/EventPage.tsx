@@ -653,7 +653,9 @@ function EventEditorialDetails({
                   onClick={() =>
                     downloadEventCalendarIcs(details, {
                       eventId,
-                      summary: `Milly & Tariq — ${displayTitle}`,
+                      summary:
+                        details.calendarSummary ??
+                        `Milly & Tariq — ${displayTitle}`,
                     })
                   }
                 >

@@ -9,8 +9,10 @@ export type ReceptionEventDetails = {
   title: string
   /** ISO string for sorting / formatting (local wall time assumed). */
   dateIso: string
-  /** Same clock semantics as `dateIso`; end of event for calendar export. */
-  endDateIso: string
+  /** Same clock semantics as `dateIso`; end of event for calendar export (omit for no end time). */
+  endDateIso?: string
+  /** Optional ICS SUMMARY; defaults to “Milly & Tariq — {title}”. */
+  calendarSummary?: string
   startTimeLabel: string
   venueName: string
   /** Shown under the details column photo (e.g. “Hosted by …”). */
@@ -55,8 +57,8 @@ export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   },
   mehndi: {
     title: 'Mehndi',
-    dateIso: '2026-08-07T17:00:00',
-    endDateIso: '2026-08-07T22:00:00',
+    dateIso: '2026-08-07T19:00:00',
+    calendarSummary: "Milly's Mehndi",
     startTimeLabel: '7:00 PM',
     venueName: 'The Prashar Residence',
     hostedByLine: 'Hosted by The Prashar Family',

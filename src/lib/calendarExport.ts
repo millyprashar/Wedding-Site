@@ -96,11 +96,17 @@ export function downloadEventCalendarIcs(
   options: { eventId: string; summary?: string },
 ) {
   const start = wallTimeInTimeZoneToUtc(details.dateIso, EVENT_WALL_TIME_ZONE)
-  let end = wallTimeInTimeZoneToUtc(details.endDateIso, EVENT_WALL_TIME_ZONE)
-  if (end.getTime() <= start.getTime()) {
-    end = new Date(start.getTime() + 60 * 60 * 1000)
+  const summary =
+    options.summary ??
+    details.calendarSummary ??
+    `Milly & Tariq — ${details.title}`
+  let end: Date | null = null
+  if (details.endDateIso) {
+    end = wallTimeInTimeZoneToUtc(details.endDateIso, EVENT_WALL_TIME_ZONE)
+    if (end.getTime() <= start.getTime()) {
+      end = new Date(start.getTime() + 60 * 60 * 1000)
+    }
   }
-  const summary = options.summary ?? `Milly & Tariq — ${details.title}`
   const description = [
     `${details.startTimeLabel} · ${details.venueName}`,
     details.hostedByLine,
@@ -120,7 +126,7 @@ export function downloadEventCalendarIcs(
     `UID:${uid}`,
     `DTSTAMP:${formatIcsUtc(new Date())}`,
     `DTSTART:${formatIcsUtc(start)}`,
-    `DTEND:${formatIcsUtc(end)}`,
+    ...(end ? [`DTEND:${formatIcsUtc(end)}`] : []),
     `SUMMARY:${escapeIcsText(summary)}`,
     `LOCATION:${escapeIcsText(location)}`,
     `DESCRIPTION:${escapeIcsText(description)}`,
