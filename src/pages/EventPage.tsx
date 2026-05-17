@@ -369,7 +369,7 @@ export function EventPage() {
                 </p>
                 <p className="rsvp-editorial__lede-line">
                   guest in your group by{' '}
-                  <strong className="rsvp-editorial__lede-strong">July 10th 2026</strong>
+                  <strong className="rsvp-editorial__lede-strong">July 1st 2026</strong>
                   .
                 </p>
                 <p className="rsvp-editorial__lede-line">
