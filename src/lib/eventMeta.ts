@@ -29,9 +29,9 @@ export type ReceptionEventDetails = {
 export const RECEPTION_EVENT_DETAILS: Record<string, ReceptionEventDetails> = {
   'reception-prashar': {
     title: 'Reception',
-    dateIso: '2026-08-08T16:30:00',
+    dateIso: '2026-08-08T16:00:00',
     endDateIso: '2026-08-08T23:30:00',
-    startTimeLabel: '4:30 PM',
+    startTimeLabel: '4:00 PM',
     venueName: 'Berkeley Country Club',
     hostedByLine: 'Hosted by The Prashar Family',
     addressLines: ['7901 Cutting Blvd', 'El Cerrito, California 94530'],
